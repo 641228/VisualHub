@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="Official Image Bed">
+<meta name="description" content="高性能专业图床系统 - 免费图片托管、上传、存储、分享">
+<title>专业图床系统 | 高速稳定图片托管平台</title>
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft Yahei",PingFang SC,Helvetica Neue,sans-serif}
+:root{--primary:#165DFF;--primary-light:#E8F3FF;--success:#00B42A;--danger:#F53F3F;--warning:#FF7D00;--gray-1:#ffffff;--gray-2:#f5f7fa;--gray-3:#e5e6eb;--gray-4:#c9cdd4;--gray-5:#86909c;--gray-6:#4e5969;--gray-7:#272e3b;--gray-8:#1d2129;--shadow:0 4px 16px rgba(0,0,0,0.08);--radius:8px;--transition:all 0.25s ease}
+body{background-color:var(--gray-2);color:var(--gray-8);min-height:100vh}
+.container{width:100%;max-width:1280px;margin:0 auto;padding:0 20px}
+.header{background:var(--gray-1);box-shadow:var(--shadow);position:sticky;top:0;z-index:99}
+.header-inner{display:flex;justify-content:space-between;align-items:center;height:70px}
+.logo-group{display:flex;align-items:center;gap:12px}
+.logo-icon{width:36px;height:36px;background:var(--primary);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px}
+.logo-text{font-size:20px;font-weight:600;color:var(--gray-8)}
+.logo-desc{font-size:12px;color:var(--gray-5)}
+.nav-user{display:flex;align-items:center;gap:16px}
+.btn{height:38px;padding:0 18px;border-radius:var(--radius);font-size:14px;cursor:pointer;transition:var(--transition);border:none;outline:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:#0E42D2}
+.btn-outline{background:transparent;border:1px solid var(--primary);color:var(--primary)}
+.btn-outline:hover{background:var(--primary-light)}
+.btn-danger{background:var(--danger);color:#fff}
+.main{padding:30px 0}
+.card{background:var(--gray-1);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px}
+.card-header{padding:20px 24px;border-bottom:1px solid var(--gray-3);display:flex;justify-content:space-between;align-items:center}
+.card-title{font-size:16px;font-weight:600;color:var(--gray-8)}
+.card-body{padding:24px}
+.tab-nav{display:flex;border-bottom:1px solid var(--gray-3)}
+.tab-item{padding:16px 28px;font-size:15px;color:var(--gray-6);cursor:pointer;position:relative;transition:var(--transition)}
+.tab-item.active{color:var(--primary);font-weight:500}
+.tab-item.active::after{content:"";position:absolute;bottom:-1px;left:0;width:100%;height:2px;background:var(--primary)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.upload-box{border:2px dashed var(--gray-4);border-radius:var(--radius);padding:60px 20px;text-align:center;transition:var(--transition);cursor:pointer}
+.upload-box:hover{border-color:var(--primary);background:var(--primary-light)}
+.upload-icon{font-size:56px;color:var(--primary);margin-bottom:16px}
+.upload-title{font-size:18px;color:var(--gray-7);margin-bottom:8px}
+.upload-desc{font-size:14px;color:var(--gray-5)}
+.file-input{display:none}
+.upload-action{margin-top:24px;text-align:center}
+.tips-text{font-size:13px;margin-top:12px}
+.tips-success{color:var(--success)}
+.tips-error{color:var(--danger)}
+.empty-box{padding:60px;text-align:center;color:var(--gray-5)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+.image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.image-item{border:1px solid var(--gray-3);border-radius:var(--radius);overflow:hidden;transition:var(--transition)}
+.image-item:hover{box-shadow:var(--shadow)}
+.image-preview{width:100%;height:160px;object-fit:cover;display:block;background:var(--gray-2)}
+.image-action{padding:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--gray-3)}
+.image-action .btn{height:34px;font-size:12px;padding:0}
+.modal-wrap{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;visibility:hidden;transition:var(--transition)}
+.modal-wrap.show{opacity:1;visibility:visible}
+.modal{width:100%;max-width:420px;background:var(--gray-1);border-radius:var(--radius);box-shadow:var(--shadow);transform:scale(0.95);transition:var(--transition)}
+.modal-wrap.show .modal{transform:scale(1)}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--gray-3);display:flex;justify-content:space-between;align-items:center}
+.modal-title{font-size:18px;font-weight:600}
+.modal-close{font-size:20px;color:var(--gray-5);cursor:pointer}
+.modal-body{padding:24px}
+.modal-foot{padding:16px 24px;border-top:1px solid var(--gray-3);display:flex;justify-content:flex-end;gap:12px}
+.form-item{margin-bottom:20px}
+.form-label{display:block;font-size:14px;color:var(--gray-6);margin-bottom:8px}
+.form-input{width:100%;height:40px;padding:0 14px;border:1px solid var(--gray-3);border-radius:var(--radius);font-size:14px;transition:var(--transition);outline:none}
+.form-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(22,93,255,0.1)}
+.loading{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:rotate 0.8s linear infinite}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.user-info{display:flex;align-items:center;gap:8px;color:var(--gray-7)}
+@media (max-width:768px){.header-inner{height:60px}.logo-text{font-size:16px}.logo-desc{display:none}.tab-item{padding:14px 16px;font-size:14px}.image-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}.upload-box{padding:40px 16px}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="container">
+<div class="header-inner">
+<div class="logo-group">
+<div class="logo-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+<div>
+<div class="logo-text">高速图床系统</div>
+<div class="logo-desc">稳定 · 高速 · 安全 · 永久存储</div>
+</div>
+</div>
+<div class="nav-user">
+<span class="user-info" id="userInfo" style="display:none"><i class="fas fa-user"></i><span id="userName"></span></span>
+<button class="btn btn-outline" id="loginBtn">登录</button>
+<button class="btn btn-primary" id="registerBtn">注册</button>
+<button class="btn btn-danger" id="logoutBtn" style="display:none">退出登录</button>
+</div>
+</div>
+</div>
+</header>
+<main class="main">
+<div class="container">
+<div class="card">
+<div class="tab-nav">
+<div class="tab-item active" data-tab="upload">图片上传</div>
+<div class="tab-item" data-tab="manage">图片管理</div>
+</div>
+<div class="card-body" style="padding:0">
+<div class="tab-panel active" data-panel="upload">
+<div class="card-body">
+<div class="upload-box" id="uploadBox">
+<div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+<div class="upload-title">点击或拖拽图片至此处上传</div>
+<div class="upload-desc">支持 JPG、PNG、GIF、WebP 格式，单图最大20MB，批量上传</div>
+<input type="file" class="file-input" id="fileInput" accept="image/*" multiple>
+</div>
+<div class="upload-action">
+<button class="btn btn-primary" id="uploadSubmit">确认上传</button>
+</div>
+<div class="tips-text" id="uploadTips"></div>
+</div>
+</div>
+<div class="tab-panel" data-panel="manage">
+<div class="card-body">
+<div class="image-grid" id="imageGrid"></div>
+<div class="empty-box" id="emptyBox">
+<div class="empty-icon"><i class="fas fa-folder-open"></i></div>
+<div>暂无上传图片，快去上传吧</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div class="modal-wrap" id="loginModal">
+<div class="modal">
+<div class="modal-head">
+<div class="modal-title">账号登录</div>
+<div class="modal-close" data-close="login"><i class="fas fa-times"></i></div>
+</div>
+<div class="modal-body">
+<div class="form-item">
+<label class="form-label">登录账号</label>
+<input type="text" class="form-input" id="loginAccount" placeholder="请输入账号">
+</div>
+<div class="form-item">
+<label class="form-label">登录密码</label>
+<input type="password" class="form-input" id="loginPwd" placeholder="请输入密码">
+</div>
+<div class="tips-text" id="loginTips"></div>
+</div>
+<div class="modal-foot">
+<button class="btn btn-outline" data-close="login">取消</button>
+<button class="btn btn-primary" id="loginSubmit">立即登录</button>
+</div>
+</div>
+</div>
+<div class="modal-wrap" id="registerModal">
+<div class="modal">
+<div class="modal-head">
+<div class="modal-title">账号注册</div>
+<div class="modal-close" data-close="register"><i class="fas fa-times"></i></div>
+</div>
+<div class="modal-body">
+<div class="form-item">
+<label class="form-label">注册账号</label>
+<input type="text" class="form-input" id="regAccount" placeholder="请设置账号">
+</div>
+<div class="form-item">
+<label class="form-label">登录密码</label>
+<input type="password" class="form-input" id="regPwd" placeholder="请设置密码">
+</div>
+<div class="form-item">
+<label class="form-label">确认密码</label>
+<input type="password" class="form-input" id="regRePwd" placeholder="再次输入密码">
+</div>
+<div class="tips-text" id="regTips"></div>
+</div>
+<div class="modal-foot">
+<button class="btn btn-outline" data-close="register">取消</button>
+<button class="btn btn-primary" id="regSubmit">立即注册</button>
+</div>
+</div>
+</div>
+<script>
+const API_BASE = "http://localhost:8080/api"
+let loginState = false
+let selectImageFiles = []
+let currentUser = null
+const tabItems = document.querySelectorAll(".tab-item")
+const tabPanels = document.querySelectorAll(".tab-panel")
+tabItems.forEach(item=>{
+item.onclick=function(){
+const tab = this.dataset.tab
+tabItems.forEach(i=>i.classList.remove("active"))
+tabPanels.forEach(p=>p.classList.remove("active"))
+this.classList.add("active")
+document.querySelector(`[data-panel="${tab}"]`).classList.add("active")
+if(tab==="manage"){
+loadUserImageList()
+}
+}
+})
+const loginModal = document.getElementById("loginModal")
+const registerModal = document.getElementById("registerModal")
+const loginBtn = document.getElementById("loginBtn")
+const registerBtn = document.getElementById("registerBtn")
+const logoutBtn = document.getElementById("logoutBtn")
+const userInfoDom = document.getElementById("userInfo")
+const userNameDom = document.getElementById("userName")
+const closeBtns = document.querySelectorAll("[data-close]")
+loginBtn.onclick=()=>{
+loginModal.classList.add("show")
+clearLoginTips()
+}
+registerBtn.onclick=()=>{
+registerModal.classList.add("show")
+clearRegTips()
+}
+closeBtns.forEach(btn=>{
+btn.onclick=()=>{
+const type = btn.dataset.close
+if(type==="login") loginModal.classList.remove("show")
+if(type==="register") registerModal.classList.remove("show")
+}
+})
+logoutBtn.onclick=()=>{
+loginState=false
+currentUser=null
+loginBtn.style.display="inline-flex"
+registerBtn.style.display="inline-flex"
+logoutBtn.style.display="none"
+userInfoDom.style.display="none"
+document.getElementById("imageGrid").innerHTML=""
+document.getElementById("emptyBox").style.display="block"
+}
+document.getElementById("loginSubmit").onclick=async()=>{
+const account = document.getElementById("loginAccount").value.trim()
+const pwd = document.getElementById("loginPwd").value.trim()
+if(!account||!pwd){
+showLoginTips("请输入完整账号密码","error")
+return
+}
+let btn = this
+btn.innerHTML='<span class="loading"></span>登录中'
+btn.disabled=true
+try{
+const res = await fetch(`${API_BASE}/login`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({username:account,password:pwd})
+})
+const data = await res.json()
+if(data.code===200){
+loginState=true
+currentUser=data.data
+userNameDom.innerText=account
+loginModal.classList.remove("show")
+loginBtn.style.display="none"
+registerBtn.style.display="none"
+logoutBtn.style.display="inline-flex"
+userInfoDom.style.display="flex"
+clearLoginTips()
+loadUserImageList()
+}else{
+showLoginTips(data.msg||"登录失败","error")
+}
+}catch(err){
+showLoginTips("服务器连接异常，请稍后重试","error")
+}
+btn.innerHTML="立即登录"
+btn.disabled=false
+}
+document.getElementById("regSubmit").onclick=async()=>{
+const account = document.getElementById("regAccount").value.trim()
+const pwd = document.getElementById("regPwd").value.trim()
+const repwd = document.getElementById("regRePwd").value.trim()
+if(!account||!pwd||!repwd){
+showRegTips("请填写完整注册信息","error")
+return
+}
+if(pwd!==repwd){
+showRegTips("两次输入密码不一致","error")
+return
+}
+let btn = this
+btn.innerHTML='<span class="loading"></span>注册中'
+btn.disabled=true
+try{
+const res = await fetch(`${API_BASE}/register`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({username:account,password:pwd})
+})
+const data = await res.json()
+if(data.code===200){
+registerModal.classList.remove("show")
+alert("注册成功，请登录您的账号")
+clearRegTips()
+}else{
+showRegTips(data.msg||"注册失败","error")
+}
+}catch(err){
+showRegTips("服务器连接异常，请稍后重试","error")
+}
+btn.innerHTML="立即注册"
+btn.disabled=false
+}
+const uploadBox = document.getElementById("uploadBox")
+const fileInput = document.getElementById("fileInput")
+uploadBox.onclick=()=>{
+if(!loginState){
+showUploadTips("请先登录账号后上传图片","error")
+return
+}
+fileInput.click()
+}
+fileInput.onchange=(e)=>{
+selectImageFiles = Array.from(e.target.files).filter(item=>item.type.startsWith("image/"))
+if(selectImageFiles.length>0){
+showUploadTips(`已选择 ${selectImageFiles.length} 张图片，点击确认上传即可`,"success")
+}else{
+showUploadTips("未选择有效图片文件","error")
+}
+}
+uploadBox.ondragover=(e)=>e.preventDefault()
+uploadBox.ondrop=(e)=>{
+e.preventDefault()
+if(!loginState){
+showUploadTips("请先登录账号后上传图片","error")
+return
+}
+selectImageFiles = Array.from(e.dataTransfer.files).filter(item=>item.type.startsWith("image/"))
+if(selectImageFiles.length>0){
+showUploadTips(`拖拽选中 ${selectImageFiles.length} 张图片，点击确认上传即可`,"success")
+}else{
+showUploadTips("未识别到有效图片文件","error")
+}
+}
+document.getElementById("uploadSubmit").onclick=async()=>{
+if(!loginState){
+showUploadTips("请先登录账号","error")
+return
+}
+if(selectImageFiles.length===0){
+showUploadTips("请选择需要上传的图片","error")
+return
+}
+let btn = this
+btn.innerHTML='<span class="loading"></span>上传中'
+btn.disabled=true
+const formData = new FormData()
+selectImageFiles.forEach(file=>{
+formData.append("file",file)
+})
+try{
+const res = await fetch(`${API_BASE}/upload`,{
+method:"POST",
+body:formData
+})
+const data = await res.json()
+if(data.code===200){
+showUploadTips("图片上传成功！","success")
+selectImageFiles=[]
+fileInput.value=""
+loadUserImageList()
+}else{
+showUploadTips(data.msg||"图片上传失败","error")
+}
+}catch(err){
+showUploadTips("上传请求异常，请检查服务器状态","error")
+}
+btn.innerHTML="确认上传"
+btn.disabled=false
+}
+async function loadUserImageList(){
+if(!loginState) return
+const grid = document.getElementById("imageGrid")
+const empty = document.getElementById("emptyBox")
+grid.innerHTML=""
+try{
+const res = await fetch(`${API_BASE}/list`)
+const data = await res.json()
+if(data.code===200&&data.data.length>0){
+empty.style.display="none"
+data.data.forEach(item=>{
+const dom = document.createElement("div")
+dom.className="image-item"
+dom.innerHTML=`<img class="image-preview" src="${item.url}" alt="图片">
+<div class="image-action">
+<button class="btn btn-outline copy-link" data-url="${item.url}">复制链接</button>
+<button class="btn btn-primary download-img" data-url="${item.url}">下载图片</button>
+</div>`
+grid.appendChild(dom)
+})
+bindImageEvent()
+}else{
+empty.style.display="block"
+}
+}catch(err){
+empty.style.display="block"
+empty.innerHTML='<div class="empty-icon"><i class="fas fa-exclamation-circle"></i></div><div>数据加载失败</div>'
+}
+}
+function bindImageEvent(){
+document.querySelectorAll(".copy-link").forEach(btn=>{
+btn.onclick=async()=>{
+const url = btn.dataset.url
+try{
+await navigator.clipboard.writeText(url)
+alert("图片链接复制成功！")
+}catch(err){
+prompt("手动复制链接",url)
+}
+}
+})
+document.querySelectorAll(".download-img").forEach(btn=>{
+btn.onclick=()=>{
+const url = btn.dataset.url
+const a = document.createElement("a")
+a.href=url
+a.download=url.split("/").pop()
+document.body.appendChild(a)
+a.click()
+document.body.removeChild(a)
+}
+})
+}
+function showUploadTips(text,type){
+const dom = document.getElementById("uploadTips")
+dom.innerText=text
+dom.className=`tips-text tips-${type}`
+}
+function showLoginTips(text,type){
+const dom = document.getElementById("loginTips")
+dom.innerText=text
+dom.className=`tips-text tips-${type}`
+}
+function showRegTips(text,type){
+const dom = document.getElementById("regTips")
+dom.innerText=text
+dom.className=`tips-text tips-${type}`
+}
+function clearLoginTips(){
+document.getElementById("loginTips").innerText=""
+}
+function clearRegTips(){
+document.getElementById("regTips").innerText=""
+}
+</script>
+</body>
+</html>
